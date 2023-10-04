@@ -1,0 +1,5 @@
+cdle/wordcount/mr/WordCountUtils$Statistics.class
+cdle/wordcount/mr/WordCountUtils.class
+cdle/wordcount/mr/formaters/input/MyLogUtils.class
+cdle/wordcount/mr/formaters/input/MyFileInputFormat.class
+cdle/wordcount/mr/formaters/input/MyTextInputFormat.class

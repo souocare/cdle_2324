@@ -1,0 +1,4 @@
+cdle/wordcount/mr/WordCountMapperVer02.class
+cdle/wordcount/mr/WordCountApplicationVer02.class
+cdle/wordcount/mr/WordCountReducerVer02.class
+cdle/wordcount/mr/WordCountCombinerVer02.class

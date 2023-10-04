@@ -1,0 +1,19 @@
+# docker compose -p cdle-23-24 up -d
+version: '3.3'
+
+services:
+    # Contentor para suportar o ambiente de execução da UC de CDLE
+    hadoop:
+        image: cdle.ubuntu.2023.2024
+        container_name: hadoop-opencv-2324
+        hostname: cdle.head
+        volumes:
+            - ../examples:/home/usermr/examples
+        ports:
+            - '222:22'
+            - '8042:8042'
+            - '8088:8088'
+            - '9864:9864'
+            - '9868:9868'
+            - '9870:9870'
+            - '19888:19888'

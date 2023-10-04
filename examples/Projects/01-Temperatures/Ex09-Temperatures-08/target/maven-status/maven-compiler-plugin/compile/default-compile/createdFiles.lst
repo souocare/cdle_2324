@@ -1,0 +1,5 @@
+cdle/temperatures/mr/MaxTemperatureMapperVer01.class
+cdle/temperatures/mr/NcdcRecordParser.class
+cdle/temperatures/mr/MaxTemperatureMapperVer02.class
+cdle/temperatures/mr/MaxTemperatureDriver.class
+cdle/temperatures/mr/MaxTemperatureReducer.class

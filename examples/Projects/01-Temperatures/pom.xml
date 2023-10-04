@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>cdle</groupId>
+    <artifactId>ExamplesCDLE</artifactId>
+    <version>2020.2021.SemInv</version>
+  </parent>
+  
+  <groupId>cdle.temperatures</groupId>
+  <artifactId>01-Temperatures</artifactId>
+
+  <packaging>pom</packaging>
+
+  <name>01-Temperatures</name>
+
+  <modules>
+    <module>Ex01-Temperatures-01</module>
+    <module>Ex02-Temperatures-02</module>
+    <module>Ex03-Temperatures-03</module>
+    <module>Ex04-Temperatures-03-Lib</module>
+    <module>Ex05-Temperatures-04</module>
+    <module>Ex06-Temperatures-05</module>
+    <module>Ex07-Temperatures-06</module>
+    <module>Ex08-Temperatures-07</module>
+    <module>Ex09-Temperatures-08</module>
+  </modules>
+</project>

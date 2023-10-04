@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project 
+        xmlns="http://maven.apache.org/POM/4.0.0" 
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+        xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>cdle</groupId>
+    <artifactId>ExamplesCDLE</artifactId>
+    <version>2020.2021.SemInv</version>
+  </parent>
+  
+  <groupId>cdle.mapreduce</groupId>
+  <artifactId>06-MapReduce</artifactId>
+
+  <packaging>pom</packaging>
+
+  <name>06-MapReduce</name>
+
+  <modules>
+    <module>Ex26-MapReduce-01</module>
+    <module>Ex27-MapReduce-02</module>
+  </modules>
+</project>

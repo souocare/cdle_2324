@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project 
+        xmlns="http://maven.apache.org/POM/4.0.0" 
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+        xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>cdle</groupId>
+    <artifactId>ExamplesCDLE</artifactId>
+    <version>2020.2021.SemInv</version>
+  </parent>
+  
+  <groupId>cdle.filesystem</groupId>
+  <artifactId>03-FileSystem</artifactId>
+
+  <packaging>pom</packaging>
+
+  <name>03-FileSystem</name>
+
+  <modules>
+    <module>Ex13-Cat</module>
+    <module>Ex14-CatFileSystem-01</module>
+    <module>Ex15-CatFileSystem-02</module>
+    <module>Ex16-FileCopyWithProgress</module>    
+    <module>Ex17-ListStatus</module>
+  </modules>
+</project>

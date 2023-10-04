@@ -1,0 +1,8 @@
+cdle/temperatures/mr/NcdcRecordParser.class
+cdle/temperatures/mr/TemperaturePair.class
+cdle/temperatures/mr/MaxTemperatureMapper.class
+cdle/temperatures/mr/MaxTemperatureGroupComparator.class
+cdle/temperatures/mr/MaxTemperaturePartitioner.class
+cdle/temperatures/mr/MaxTemperatureApplication.class
+cdle/temperatures/mr/MaxTemperatureKeyComparator.class
+cdle/temperatures/mr/MaxTemperatureReducer.class

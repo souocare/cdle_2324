@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+
+<configuration>
+  <property>
+    <name>size</name>
+    <value>12</value>
+  </property>
+  
+  <property>
+    <name>weight</name>
+    <value>light</value>
+  </property>
+</configuration>

@@ -1,0 +1,3 @@
+cdle/temperatures/mr/SortByTemperatureReducer.class
+cdle/temperatures/mr/SortByTemperatureUsingTotalOrderPartitionerApplication.class
+cdle/temperatures/mr/SortByTemperatureMapper.class

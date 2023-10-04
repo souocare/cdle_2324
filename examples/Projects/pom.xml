@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>cdle</groupId>
+  <artifactId>ExamplesCDLE</artifactId>
+  <version>2020.2021.SemInv</version>
+
+  <packaging>pom</packaging>
+
+  <name>CDLE Examples</name>
+  <description>Hadoop examples used in the context of the CDLE course</description>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
+
+    <hadoop.version>3.1.2</hadoop.version>
+    <junit.version>4.13</junit.version>
+    <mrunit.version>1.1.0</mrunit.version>
+
+    <opencv.version>4.5.1-2</opencv.version>
+  </properties>
+
+  <modules>
+    <module>01-Temperatures</module>
+    <module>02-WordCount</module>
+    <module>03-FileSystem</module>
+    <module>04-Streams</module>
+    <module>05-Configuration</module>
+    <module>06-MapReduce</module>
+    <module>07-OpenCV</module>
+  </modules>
+</project>

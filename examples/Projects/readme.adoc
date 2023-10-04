@@ -1,0 +1,139 @@
+= Large-Scale Data Computation course examples
+
+== Winter Semester 2020/2021
+
+The examples are organized in 7 different categories:
+
+. Temperatures
+. WordCount
+. FileSystem
+. Streams
+. Configuration
+. MapReduce
+. OpenCV
+
+Each category is composed of several examples (projects). However, each project has an unique name that has the form *Ex-nn*, where *nn* represents a number. For example, the first project within the category *Temperatures* is *Ex01-Temperatures-01*. For some projects the last letters in the name represent the version/evolution of the example.
+
+All the projects were built using Apache maven. To compile them just open a new console in the main directory and issue the following command:
+
+.Complie the examples
+====
+[listing]
+mnv package
+====
+
+As a result of the previous command within each project a new directory (with name *target*) is created. This directory contains all the generated artifacts as well as the corresponding *jar* file.
+
+To delete the generated artifacts we can issue the following command:
+
+.Delete the generated artifacts
+====
+[listing]
+mvn clean
+====
+
+The execution of the above commands assume that:
+
+* Java version 8 is installed;
+* Maven is installed;
+* For both Java and Maven the *bin* directory is contained in the *PATH* environment variable.
+
+The main project definitions are kept in the file pom.xml:
+
+.Main project definitions
+====
+[source]
+<project ...>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>cdle</groupId>
+  <artifactId>demos</artifactId>
+  <version>${examples-version}</version>
+  <packaging>pom</packaging>
+  <name>MapReduceDemos</name>
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
+    <hadoop.version>3.1.2</hadoop.version>
+    <junit.version>4.13</junit.version>
+    <mrunit.version>1.1.0</mrunit.version>
+    <opencv.version>3.2.0-0</opencv.version>
+    <examples-version>2020.2021.SemInv</examples-version>
+  </properties>	
+  <modules>
+    ...
+  </modules>
+</project>
+====
+
+The properties of the used artifacts are propagated to all the child projects.
+
+For each example there is a Linux Bash script (`usage.sh`) that can be used to show how to run the example:
+
+.Script to show the usage of an example
+====
+[listing]
+#!/bin/bash
+#
+# Setting Hadoop class path
+#
+HADOOP_COMPILE_CLASSPATH=`hadoop classpath`
+CURRENT_DIRECTORY=`pwd`
+SRC_DIR=${CURRENT_DIRECTORY}/src/main/java
+JAR_FILE=`ls ${CURRENT_DIRECTORY}/target/*.jar`
+#
+# Identifying main class
+#
+cd ${SRC_DIR}
+MAIN_CLASS_AUX=`find . -type f -exec grep -H 'public static void main' {} \; | cut -d ':' -f 1 | cut -d '.' -f 2`
+cd ${CURRENT_DIRECTORY}
+MAIN_CLASS=`echo ${MAIN_CLASS_AUX:1} | tr '/' '.'`
+function showUsage() {
+	if [ "${MAIN_CLASS}" != "" ]; then
+		echo -e "\nUsage:"
+		echo -e "export HADOOP_CLASSPATH=${JAR_FILE}"
+		echo -e "hadoop ${MAIN_CLASS} <args>\n"
+	else
+		echo -e "\nMain class not detected!"
+		echo -e "\nRunning a library?\n"
+	fi
+}
+showUsage
+====
+
+To see the usage of an example we just need to issue the following command:
+
+.Show the usage of an example
+====
+[listing]
+usermr@hadoop: ./usage.sh
+====
+
+The result is an output similar to the one presented next:
+
+.Result of showing the usage of an example
+====
+[listing]
+Usage:
+export HADOOP_CLASSPATH=/home/usermr/examples/Projects/01-Temperatures/Ex01-Temperatures-01/target/Ex01-Temperatures-01-2020.2021.SemInv.jar
+hadoop cdle.temperatures.mr.MaxTemperatureApplication <args>
+====
+
+To execute an example open a command prompt within the corresponding directory and issue the following commands:
+
+.Execute an example
+====
+[listing, subs="quotes"]
+export HADOOP_CLASSPATH=./target/*file.jar*
+hadoop *MainClass* *args*
+====
+
+were *file.jar*, *MainClass* and *args* are respectively the name of the generated jar file, the name of the class that contains the main method to be executed and the example arguments obtained from the execution of the usage script.
+
+For each example there is also the Linux Bash script `run.sh` that can be used to execute the example: 
+
+.Executing the example using the corresponding run script
+====
+[listing]
+usermr@hadoop: ./run.sh
+====
