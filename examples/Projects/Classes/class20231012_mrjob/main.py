@@ -27,4 +27,8 @@ if localorhadoop == "hadoop":
     os.system("hadoop fs -copyToLocal /user/usermr/utput=/home/usermr/examples/output/gutenberg-small/ /home/usermr/examples/output/")
 
 else:
+    
+    os.system("rm -r /home/usermr/examples/output/gutenberg-small/*")
+
+    os.system("python3 mapreduce.py file:///home/usermr/examples/input/gutenberg-small/"+input+" -o "+output+" -nr 2 -cc GzipCodec")
     pass
