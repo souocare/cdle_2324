@@ -17,6 +17,14 @@ if localorhadoop == "hadoop":
     os.system("hadoop fs -rm -r /user/usermr/output")
     os.system("rm -r /home/usermr/examples/output/gutenberg-small/*")
 
+    destination_directory = "/user/usermr/examples/input/gutenberg-small/" + input
+    check_dir_command = "hadoop fs -test -e " + destination_directory
+    directory_exists = os.system(check_dir_command) == 0
+
+    if not directory_exists:
+        print(f"Destination directory {destination_directory} does not exist in HDFS. Creating it...")
+        os.system("hadoop fs -mkdir -p " + destination_directory)
+
     # added file to hadoop
     os.system("hadoop fs -put -f /home/usermr/examples/input/gutenberg-small/" + input + " /user/usermr/examples/input/gutenberg-small/")
 
