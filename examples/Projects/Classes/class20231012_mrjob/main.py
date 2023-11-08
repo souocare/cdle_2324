@@ -40,7 +40,7 @@ if localorhadoop == "hadoop":
 
 
     #remove output folder of user/usermr
-    destination_directory_outhome = "/home/usermr/output/"
+    destination_directory_outhome = "/home/usermr/examples/output/"
     check_dir_command_outhome = "hadoop fs -test -e " + destination_directory_outhome
     directory_exists_outhome = os.system(check_dir_command_outhome) == 0
     if not directory_exists_outhome:
@@ -58,10 +58,10 @@ if localorhadoop == "hadoop":
     os.system('python3 mapreduce.py -r hadoop hdfs:///user/usermr/examples/input/gutenberg-small/' + input + ' -o ' + output + ' -nr 2 -cc GzipCodec')
 
     print("")
-    try:
-        os.system("hadoop fs -copyToLocal /user/usermr/output/ /home/usermr/examples/")
-    except:
-        os.system("hadoop fs -copyToLocal /home/usermr/output/ /home/usermr/examples/")
+    
+    os.system("hadoop fs -copyToLocal /user/usermr/output/ /home/usermr/examples/")
+ 
+    os.system("hadoop fs -copyToLocal /home/usermr/examples/output/ /home/usermr/examples/")
 
 else:
     
