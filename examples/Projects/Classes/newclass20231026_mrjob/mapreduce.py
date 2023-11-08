@@ -1,55 +1,29 @@
-import re
-import json
-import sys
-
 from mrjob.job import MRJob
-from mrjob.step import MRStep
+import cv2
 
-
-class WordCounter(MRJob):
-
+class FaceDetectionJob(MRJob):
     def configure_args(self):
-        super(WordCounter, self).configure_args()
+        super(FaceDetectionJob, self).configure_args()
+        self.add_file_arg('--haarcascade', help='Path to Haar Cascade XML file for face detection')
         self.add_passthru_arg("-nr", "--numreducers", help="Number of reducers")
-        self.add_passthru_arg("-cc", "--compressioncodec", help="Compression codec (e.g., gzip)")
+        #self.add_passthru_arg("-cc", "--compressioncodec", help="Compression codec (e.g., gzip)")
 
-    def mapper(self, key, value):
-        #value = value.decode('utf-8')  # Decode bytes to utf-8 string
-        
-        for line in value:
-            line = line.strip()
-            tokens = re.findall(r"\b\w+\b", line)
-            for token in tokens:
-                yield token, 1
+    def mapper_init(self):
+        self.face_cascade = cv2.CascadeClassifier(self.options.haarcascade)
 
-    def reducer(self, key, value):
-        yield None, (sum(value), key)
+    def mapper(self, _, line):
+        image_path = line.strip()
+        image = cv2.imread(image_path)
+        gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+        faces = self.face_cascade.detectMultiScale(gray, scaleFactor=1.3, minNeighbors=5, minSize=(30, 30))
 
-    def reducer_sort(self, key, values):
-        for count, key in sorted(values):
-            yield count, key
+        for (x, y, w, h) in faces:
+            yield None, (image_path, (x, y, x + w, y + h))
 
-    def combiner(self, key, values):
-        yield key, sum(values)
+def steps(self):
+    return [
+        self.mr(mapper_init=self.mapper_init, mapper=self.mapper)
+    ]
 
-    def steps(self):
-        return [
-            MRStep(
-                mapper=self.mapper, 
-                combiner = self.combiner,
-                reducer=self.reducer,
-                jobconf={
-                    'mapreduce.job.reduces': self.options.numreducers  # Set the number of reducers
-                }
-            ),
-            MRStep(
-                reducer=self.reducer_sort,
-                jobconf={
-                    'mapreduce.output.fileoutputformat.compress': 'true',
-                    'mapreduce.output.fileoutputformat.compress.codec': "org.apache.hadoop.io.compress." + f"{self.options.compressioncodec}"  # Set compression codec
-                }
-            )
-        ]
-    
 if __name__ == '__main__':
-    WordCounter.run()
+    FaceDetectionJob.run()
