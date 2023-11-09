@@ -15,11 +15,11 @@ localorhadoop = "hadoop"
 if localorhadoop == "hadoop":
     # Remove files so it can generate the new ouputs
     
-    os.system("hadoop fs -rm -r " + output)
-    os.system("rm -r " + output + "/*")
+    os.system("hadoop fs -rm -r /user" + output)
+    os.system("rm -r /home" + output + "/*")
 
     # remove input folder hadoop
-    destination_directory = "/home/usermr/examples/input/gutenberg-small/*" + input
+    destination_directory = "/user/usermr/examples/input/gutenberg-small/*" + input
     check_dir_command = "hadoop fs -test -e " + destination_directory
     directory_exists = os.system(check_dir_command) == 0
     if not directory_exists:
@@ -29,7 +29,7 @@ if localorhadoop == "hadoop":
 
 
     #remove output folder of user/usermr
-    destination_directory_outhome = "/home/usermr/examples/output/"
+    destination_directory_outhome = "/user/usermr/examples/output/"
     check_dir_command_outhome = "hadoop fs -test -e " + destination_directory_outhome
     directory_exists_outhome = os.system(check_dir_command_outhome) == 0
     if not directory_exists_outhome:
@@ -40,14 +40,14 @@ if localorhadoop == "hadoop":
 
 
     # added file to hadoop
-    os.system("hadoop fs -put -f /home/usermr/examples/input/gutenberg-small/" + input + " /home/usermr/examples/input/gutenberg-small/")
+    os.system("hadoop fs -put -f /home/usermr/examples/input/gutenberg-small/" + input + " /user/usermr/examples/input/gutenberg-small/")
 
-    os.system('python3 mapreduce.py -r hadoop hdfs:///home/usermr/examples/input/gutenberg-small/' + input + ' -o ' + output + ' -nr 2 -cc GzipCodec')
+    os.system('python3 mapreduce.py -r hadoop hdfs:///user/usermr/examples/input/gutenberg-small/' + input + ' -o /user' + output + ' -nr 2 -cc GzipCodec')
 
     print("")
     
  
-    os.system("hadoop fs -copyToLocal /home/usermr/examples/output/ /home/usermr/examples/")
+    os.system("hadoop fs -copyToLocal /user/usermr/examples/output/ /home/usermr/examples/")
 
 else:
     
