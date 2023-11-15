@@ -20,7 +20,7 @@ if localorhadoop == "hadoop":
     os.system("rm -r /home" + output + "*")
 
     # remove input folder hadoop
-    destination_directory = "/user/usermr/examples/input/gutenberg-small/*" + input
+    destination_directory = "/user/usermr/examples/input/gutenberg-small/"
     check_dir_command = "hadoop fs -test -e " + destination_directory
     directory_exists = os.system(check_dir_command) == 0
     if not directory_exists:
