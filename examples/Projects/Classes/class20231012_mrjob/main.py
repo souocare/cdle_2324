@@ -16,7 +16,8 @@ if localorhadoop == "hadoop":
     # Remove files so it can generate the new ouputs
     
     os.system("hadoop fs -rm -r /user" + output)
-    os.system("rm -r /home" + output + "/*")
+    os.system("hadoop fs -rm -r /user/usermr/examples/input/gutenberg-small/")
+    os.system("rm -r /home" + output + "*")
 
     # remove input folder hadoop
     destination_directory = "/user/usermr/examples/input/gutenberg-small/*" + input
