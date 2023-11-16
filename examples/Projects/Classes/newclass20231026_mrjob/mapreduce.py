@@ -20,9 +20,20 @@ class FaceDetectionJob(MRJob):
         for (x, y, w, h) in faces:
             yield None, (image_path, (x, y, x + w, y + h))
 
+    def reducer(self, _, values):
+        for value in values:
+            yield None, value
+
 def steps(self):
     return [
-        self.mr(mapper_init=self.mapper_init, mapper=self.mapper)
+        self.mr(
+            mapper_init=self.mapper_init, 
+            mapper=self.mapper,
+            reducer=self.reducer,
+            jobconf={
+                    'mapreduce.job.reduces': self.options.numreducers  # Set the number of reducers
+                }
+                )
     ]
 
 if __name__ == '__main__':
