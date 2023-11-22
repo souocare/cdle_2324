@@ -4,9 +4,9 @@ import cv2
 import base64
 import mrjob
 import numpy as np
-from mrjob import FileInputFormat
+from mrjob.job import MRJob #FileInputFormat
 
-class VideoFileInputFormat(FileInputFormat):
+class VideoFileInputFormat(MRJob):
     def read_file(cls, file_path):
         # Implement video file reading here
         # Return (key, value) for each frame in the format (frame_number, image_frame_bytes)
@@ -32,6 +32,7 @@ class MROpenCVVideoProcessing(MRJob):
 
     def configure_args(self):
         super(MROpenCVVideoProcessing, self).configure_args()
+
         self.add_passthru_arg('--cascade_classifier', default='haarcascade_frontalface_default.xml')
 
     def mapper_init(self):

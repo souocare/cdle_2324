@@ -16,11 +16,10 @@ if localorhadoop == "hadoop":
     # Remove files so it can generate the new ouputs
     
     os.system("hadoop fs -rm -r /user" + output)
-    os.system("hadoop fs -rm -r /user/usermr/examples/input/facedetect/")
-    os.system("rm -r /home" + output + "*")
+    os.system("rm -r /home" + output + "/*")
 
     # remove input folder hadoop
-    destination_directory = "/user/usermr/examples/input/facedetect/"
+    destination_directory = "/user/usermr/examples/input/facedetect/*" + input
     check_dir_command = "hadoop fs -test -e " + destination_directory
     directory_exists = os.system(check_dir_command) == 0
     if not directory_exists:
