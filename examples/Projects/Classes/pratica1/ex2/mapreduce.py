@@ -1,39 +1,29 @@
-'''
- # @ Description:
-
-2. No contexto do exemplo MapReduce de Contagem de palavras (Ex10-WordCount-01) execute diferentes execuções modificando:
-a) O input e o output de dados de modo que o mesmo possa ser local (file://) ou no sistema de ficheiros distribuído (hdfs://).
-b) O número de reducers.
-c) Modifique o exemplo para poder reconfigurar os dados da aplicação utilizando configurações passadas na linha de comando. 
-Neste contexto modifique por exemplo os codecs de compressão utilizado para guardar o resultado do processamento.
- '''
-
+import re
+import json
+import sys
 
 from mrjob.job import MRJob
 from mrjob.step import MRStep
 
-# python mapreduce.py -r local --input local_input.txt --output local_output
-# python mapreduce.py -r hadoop --input hdfs:///user/input.txt --output hdfs:///user/output --num-reducers 3
 
-
-class WordCount(MRJob):
+class WordCounter(MRJob):
 
     def configure_args(self):
-        super(WordCount, self).configure_args()
-        self.add_passthru_arg('--output', default='output')
-        self.add_passthru_arg('--input', default='input')
+        super(WordCounter, self).configure_args()
         self.add_passthru_arg("-nr", "--numreducers", help="Number of reducers")
         self.add_passthru_arg("-cc", "--compressioncodec", help="Compression codec (e.g., gzip)")
 
+    def mapper(self, key, value):
+        #value = value.decode('utf-8')  # Decode bytes to utf-8 string
+        
+        #for line in value:
+        line = value #line.strip()
+        tokens = re.findall(r"\b\w+\b", line)
+        for token in tokens:
+            yield token, 1
 
-    def mapper(self, _, line):
-        for word in line.split():
-            yield word, 1
-
-    def reducer(self, word, counts):
-
-        yield word, sum(counts)
-
+    def reducer(self, key, value):
+        yield None, (sum(value), key)
 
     def reducer_sort(self, key, values):
         for count, key in sorted(values):
@@ -62,4 +52,4 @@ class WordCount(MRJob):
         ]
     
 if __name__ == '__main__':
-    WordCount.run()
+    WordCounter.run()

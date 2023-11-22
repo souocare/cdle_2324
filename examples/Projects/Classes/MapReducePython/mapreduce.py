@@ -9,6 +9,12 @@ from mrjob.step import MRStep
 
 class WordCounter(MRJob):
 
+    def configure_args(self):
+        super(WordCounter, self).configure_args()
+        self.add_passthru_arg("-nr", "--numreducers", help="Number of reducers")
+        self.add_passthru_arg("-cc", "--compressioncodec", help="Compression codec (e.g., gzip)")
+
+
     def mapper(self, key, value):
         """Instance of a Mapper
 
@@ -20,7 +26,7 @@ class WordCounter(MRJob):
             _type_: _description_
         """
         review = json.loads(value) # loads instead of load to load just a string
-        review_text = review['reviewText']
+        review_text = value #review['reviewText']
 
         tokens = re.findall(r"\b\w+\b", review_text.lower()) # Regex to find all words in the review text
 
