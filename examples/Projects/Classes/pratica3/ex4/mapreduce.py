@@ -1,15 +1,16 @@
-from mrjob.job import MRJob, MRStep
-from mrjob.protocol import BytesValueProtocol, RawValueProtocol, BytesProtocol
+from mrjob.job import MRJob
+from mrjob.protocol import BytesValueProtocol
 import cv2
 import numpy as np
 
 class VideoFileInputFormat(BytesValueProtocol):
-    def read(cls, file_path):
 
-      
+    def read(cls, file_path):
         # Implement video file reading
         # Return (key, value) for each frame in the format (frame_number, image_frame_bytes)
-        video_capture = cv2.VideoCapture(file_path, 0)
+        video_capture = cv2.VideoCapture(str(file_path))
+
+        record = np.array([])
 
         frame_number = 0
         while True:
@@ -17,82 +18,66 @@ class VideoFileInputFormat(BytesValueProtocol):
             if not success:
                 break
 
-            # Encode the image as bytes to be used as value
-            # _, buffer = cv2.imencode('.jpg', frame)
-            # image_bytes = buffer.tobytes()
-            image_bytes = frame.tobytes()
-            
             frame_number += 1
-            yield (None, image_bytes)
-            
+            record.append(frame)
+            #yield (frame_number, frame.tobytes())
 
-class MROpenCVVideoProcessing(MRJob):
+        return None, record.tobytes()
+    
+
+
+
+class FaceDetector(MRJob):
+
     INPUT_PROTOCOL = VideoFileInputFormat
-
-    def configure_args(self):
-        super(MROpenCVVideoProcessing, self).configure_args()
-        self.add_passthru_arg("-nr", "--numreducers", help="Number of reducers")
-        self.add_passthru_arg("-cc", "--compressioncodec", help="Compression codec (e.g., gzip)")
-        self.add_passthru_arg('--cascade_classifier', default='haarcascade_frontalface_default.xml')
+    INTERNAL_PROTOCOL = BytesValueProtocol
 
     def mapper_init(self):
         # Load the cascade classifier at the beginning of the mapper
-        self.face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + self.options.cascade_classifier)
+        self.face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_frontalface_default.xml")
+
+        
+
 
     def mapper(self, _, record):
-
-        #log.info('Record: %s' % str(record))
-
-        # Separate the fields of the record
-        #frame_number, image_bytes = record
-        image_bytes = record.decode('utf_8')
-        # self.increment_counter('group', 'frames', 1)
-
+            
+        # convert the record to a numpy array from
+        #record_array = np.array(record)
         # Convert the bytes to a numpy array
-        image_array = np.frombuffer(image_bytes, dtype=np.uint8)
-        frame = cv2.imdecode(image_array, cv2.IMREAD_COLOR)
+        #buffer_img = cv2.imencode('.jpg', image_bytes)
+        #image_array = np.frombuffer(buffer_img)
+        #frame = cv2.imdecode(image_array) #, cv2.IMREAD_COLOR)
+        # Convert the bytes to a numpy array
+        record_buffer = np.frombuffer(record, dtype=np.uint8)
 
-        # Apply the cascade classifier to detect faces
-        #gray_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        #record_array = record_buffer.reshape((record_buffer.shape[0], record_buffer.shape[1], record_buffer.shape[2])) 
+
+        frame_number = 0
+
+        record_array = np.array(record_buffer)
+        for frame in record_array:
+            #frame_buffer = np.frombuffer(frame_bytes, dtype=np.uint8)
+            #frame = cv2.imdecode(frame_buffer, cv2.IMREAD_COLOR)
+            frame_number += 1
+
+            yield (frame_number, frame)
+
+        
+
+    def reducer(self, frame_number, frame):
+
+        count_faces = 0
+        
         faces = self.face_cascade.detectMultiScale(frame, scaleFactor=1.1, minNeighbors=5, minSize=(30, 30))
 
-        # Emit results (in this case, just the number of detected faces)
-        yield _, str(len(faces))
+        for face in faces:
+            count_faces += 1
 
-    def combiner(self, key, values):
-        # Combiner para otimizar a transferência de dados entre o Mapper e o Reducer
-        # Simplesmente soma os valores (número de faces) para a mesma chave (frame_number)
-        yield key, sum(map(int, values))
+        #percentage = 100 * count_faces / count_frames
 
-    def reducer(self, key, values):
-        # Reducer principal que soma os valores (número de faces) para a mesma chave (frame_number)
-        yield key, str(sum(map(int, values)))
+        yield (frame_number, count_faces)
+       
 
-    def reducer_sort(self, key, values):
-        # Reducer final que classifica os resultados antes da saída
-        for count, key in sorted(zip(map(int, values), key)):
-            yield key, str(count)
-
-    def steps(self):
-        return [
-            MRStep(
-                mapper_init=self.mapper_init,
-                mapper=self.mapper,
-                combiner=self.combiner,
-                reducer=self.reducer,
-                jobconf={
-                    'mapreduce.job.reduces': self.options.numreducers  # Set the number of reducers
-                }
-            ),
-            
-            MRStep(
-                reducer=self.reducer_sort,
-                jobconf={
-                    'mapreduce.output.fileoutputformat.compress': 'true',
-                    'mapreduce.output.fileoutputformat.compress.codec': "org.apache.hadoop.io.compress." + self.options.compressioncodec  # Set compression codec
-                }
-            )
-        ]
-
-if __name__ == '__main__':
-    MROpenCVVideoProcessing.run()
+    
+if __name__ == "__main__":
+    FaceDetector.run()

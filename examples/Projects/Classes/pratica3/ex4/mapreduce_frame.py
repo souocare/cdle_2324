@@ -9,7 +9,7 @@ class VideoFileInputFormat(RawValueProtocol):
       
         # Implement video file reading
         # Return (key, value) for each frame in the format (frame_number, image_frame_bytes)
-        video_capture = cv2.VideoCapture(file_path)
+        video_capture = cv2.VideoCapture(file_path, 0)
 
         frame_number = 0
         while True:
