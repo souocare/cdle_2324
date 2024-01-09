@@ -1,0 +1,25 @@
+Contagem de palavras de dimensão [3] n (n-gramas) que existem num conjunto de
+documentos de modo a produzir informação estatística relevante:
+o Tabela de frequências dos n-gramas
+o Percentagem de n-gramas que ocorrem uma única vez (também denominados de
+singletons)
+o Cálculo da medida estatística TF-IDF [4] (term frequency–inverse document
+frequency ou frequência do termo–inverso da frequência).
+
+Nosso caso:
+Contagem de palavras que existem num conjunto de documentos de modo a produzir informação estatística relevante:
+o Tabela de frequências dos n-gramas (palavras)
+o Percentagem de n-gramas que ocorrem uma única vez (também denominados de
+singletons)
+o Cálculo da medida estatística TF-IDF [4] (term frequency–inverse document
+frequency ou frequência do termo–inverso da frequência).
+
+python3 main.py hadoop file01.txt "/usermr/examples/output/gutenberg-small/"
+
+python3 mapreduce.py file:///home/usermr/examples/input/gutenberg-small/file01.txt -o file:///home/usermr/examples/output/facedetect -nr 2 -cc GzipCodec
+
+Em cada pasta
+
+Dados (reviews.json): https://www.kaggle.com/datasets/eswarchandt/amazon-music-reviews
+
+Video (pratica3/ex4): python3 mapreduce.py file:///home/usermr/examples/input/facedetect/video.mp4 -o file:///home/usermr/examples/output/facedetect -nr 2 -cc GzipCodec
