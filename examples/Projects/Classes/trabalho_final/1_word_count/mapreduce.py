@@ -6,15 +6,13 @@ import re   # Regex library
 import json
 from mrjob.job import MRJob  # MapReduce library
 from mrjob.step import MRStep
+from mrjob.protocol import JSONValueProtocol, BytesProtocol, BytesValueProtocol
+
+WORD_RE = re.compile(r"\b\w+\b")#re.compile(r"[\w']+")
 
 class WordCounter(MRJob):
-
-    def configure_args(self):
-        super(WordCounter, self).configure_args()
-        self.add_passthru_arg("-nr", "--numreducers", help="Number of reducers")
-        self.add_passthru_arg("-cc", "--compressioncodec", help="Compression codec (e.g., gzip)")
-
-
+    INPUT_PROTOCOL = BytesValueProtocol
+    #OUTPUT_PROTOCOL = JSONValueProtocol
 
     def mapper(self, key, value):
         """Instance of a Mapper
@@ -26,11 +24,12 @@ class WordCounter(MRJob):
         Yields:
             _type_: _description_
         """
+        value = value.decode('utf_8')
         review = json.loads(value) # loads instead of load to load just a string
         review_text = review['reviewText'] #get only the review text
-
-        tokens = re.findall(r"\b\w+\b", review_text.lower()) # Regex to find all words in the review text
-
+    
+        #tokens = re.findall(r"\b\w+\b", review_text.lower()) # Regex to find all words in the review text
+        tokens = re.findall(WORD_RE, review_text.lower())
         for token in tokens:
             yield token, 1 # because MRJob uses generators, we use yield instead of return
 
@@ -69,6 +68,25 @@ class WordCounter(MRJob):
 
         for count, key in sorted(values):
             yield count, key
+
+    def steps(self):
+        return [
+            MRStep(
+                mapper=self.mapper, 
+                combiner = self.combiner,
+                reducer=self.reducer,
+                #jobconf={
+                #    'mapreduce.job.reduces': self.options.numreducers  # Set the number of reducers
+                #}
+            ),
+            MRStep(
+                reducer=self.reducer_sort,
+                #jobconf={
+                #    'mapreduce.output.fileoutputformat.compress': 'true',
+                #    'mapreduce.output.fileoutputformat.compress.codec': "org.apache.hadoop.io.compress." + self.options.compressioncodec  # Set compression codec
+                #}
+            )
+        ]
 
     def steps(self):
         """Steps to run the MapReduce

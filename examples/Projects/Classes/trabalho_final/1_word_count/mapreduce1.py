@@ -19,7 +19,7 @@ class WordCounter(MRJob):
         review = json.loads(value) # loads instead of load to load just a string
         review_text = review['reviewText']
 
-        tokens = re.findall(r"\b\w+\b", review_text.lower()) # Regex to find all words in the review text
+        tokens = re.findall(r"\b\w+\b", review_text.lower().strip()) # Regex to find all words in the review text
         for token in tokens:
             yield token, 1
 
