@@ -1,10 +1,11 @@
-import re
+# Mapping: Hello World this is my review and it is awesome
+
+# Reducer vai juntar tudo pela key e somar as contagens
+
+import re   # Regex library
 import json
-import sys
-
-from mrjob.job import MRJob
+from mrjob.job import MRJob  # MapReduce library
 from mrjob.step import MRStep
-
 
 class WordCounter(MRJob):
 
@@ -14,43 +15,78 @@ class WordCounter(MRJob):
         self.add_passthru_arg("-cc", "--compressioncodec", help="Compression codec (e.g., gzip)")
 
 
+
     def mapper(self, key, value):
-        #value = value.decode('utf-8')  # Decode bytes to utf-8 string
-        
-        #for line in value:
-        line = value #line.strip()
-        tokens = re.findall(r"\b\w+\b", line)
+        """Instance of a Mapper
+
+        Args:
+            key (_type_): _description_
+            value (_type_): _description_
+
+        Yields:
+            _type_: _description_
+        """
+        review = json.loads(value) # loads instead of load to load just a string
+        review_text = review['reviewText'] #get only the review text
+
+        tokens = re.findall(r"\b\w+\b", review_text.lower()) # Regex to find all words in the review text
+
         for token in tokens:
-            yield token, 1
+            yield token, 1 # because MRJob uses generators, we use yield instead of return
 
-    def reducer(self, key, value):
-        yield None, (sum(value), key)
+    
+    def combiner(self, key, values):
+        """Prepare data for the Reducer
 
-    def reducer_sort(self, key, values):
+        Args:
+            key (_type_): _description_
+            values (_type_): _description_
+
+        Yields:
+            _type_: _description_
+        """
+
+        yield key, sum(values)
+    
+    def reducer(self, key, values):
+        """Instance of a Reducer
+
+        Args:
+            key (_type_): _description_
+            values (_type_): _description_
+
+        Yields:
+            _type_: _description_
+        """
+        
+        # to order by alphabetical order
+        #yield key, sum(values)
+        
+        # to order by count of words
+        yield None, (sum(values), key)
+
+    def reducer_sorter(self, key, values):
+
         for count, key in sorted(values):
             yield count, key
 
-    def combiner(self, key, values):
-        yield key, sum(values)
-
     def steps(self):
+        """Steps to run the MapReduce
+
+        Returns:
+            _type_: _description_
+        """
+        # We don't call the functions we just pass them
         return [
             MRStep(
-                mapper=self.mapper, 
-                combiner = self.combiner,
-                reducer=self.reducer,
-                jobconf={
-                    'mapreduce.job.reduces': self.options.numreducers  # Set the number of reducers
-                }
-            ),
+                mapper=self.mapper,
+                combiner=self.combiner,
+                reducer=self.reducer
+                ),
             MRStep(
-                reducer=self.reducer_sort,
-                jobconf={
-                    'mapreduce.output.fileoutputformat.compress': 'true',
-                    'mapreduce.output.fileoutputformat.compress.codec': "org.apache.hadoop.io.compress." + self.options.compressioncodec  # Set compression codec
-                }
-            )
+                reducer=self.reducer_sorter
+                )
         ]
-    
+
 if __name__ == '__main__':
     WordCounter.run()
