@@ -5,6 +5,14 @@ import sys
 from mrjob.job import MRJob
 from mrjob.step import MRStep
 
+import nltk
+from nltk.sentiment.vader import SentimentIntensityAnalyzer
+
+vader = SentimentIntensityAnalyzer()
+
+review_text = "This product is amazing! I love it!"
+sentiment_scores = vader.polarity_scores(review_text)
+
 
 class WordCounter(MRJob):
 
