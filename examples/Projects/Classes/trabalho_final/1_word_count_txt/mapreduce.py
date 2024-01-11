@@ -32,6 +32,24 @@ class WordCounter(MRJob):
             yield count, key
 
     
+    def steps(self):
+        return [
+            MRStep(
+                mapper=self.mapper, 
+                combiner = self.combiner,
+                reducer=self.reducer,
+                #jobconf={
+                #    'mapreduce.job.reduces': self.options.numreducers  # Set the number of reducers
+                #}
+            ),
+            MRStep(
+                reducer=self.reducer_sort,
+                #jobconf={
+                #    'mapreduce.output.fileoutputformat.compress': 'true',
+                #    'mapreduce.output.fileoutputformat.compress.codec': "org.apache.hadoop.io.compress." + self.options.compressioncodec  # Set compression codec
+                #}
+            )
+        ]
 
     def steps(self):
         return [
