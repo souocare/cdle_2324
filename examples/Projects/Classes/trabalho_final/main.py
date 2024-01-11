@@ -43,8 +43,8 @@ print(list_of_arguments)
 
 
 localorhadoop = list_of_arguments[1]
-input = list_of_arguments[2]
-output = list_of_arguments[3]
+output = list_of_arguments[2]
+inputfilename = choices_paths[selected_operation]
 
 localorhadoop = "hadoop"
 
@@ -80,9 +80,9 @@ if localorhadoop == "hadoop":
 
 
     # added file to hadoop
-    os.system("hadoop fs -put -f " + input + " /user/usermr/examples/input/textanalysis/")
+    os.system("hadoop fs -put -f " + dirname_main + inputfilename + " /user/usermr/examples/input/textanalysis/")
 
-    os.system('python3 mapreduce.py -r hadoop hdfs://'  + destination_directory + input + ' -o /' + destination_directory_outhome)# + ' -nr 2 -cc GzipCodec')
+    os.system('python3 mapreduce.py -r hadoop hdfs://'  + destination_directory + inputfilename + ' -o /' + destination_directory_outhome)# + ' -nr 2 -cc GzipCodec')
 
     print("")
     
@@ -93,5 +93,5 @@ else:
     
     os.system("rm -r " + output + "*")
 
-    os.system("python3 mapreduce.py file://"+input+" -o "+output)#+" -nr 2 -cc GzipCodec")
+    os.system("python3 mapreduce.py file://"+dirname_main + inputfilename+" -o "+output)#+" -nr 2 -cc GzipCodec")
     pass
