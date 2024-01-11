@@ -98,8 +98,13 @@ class WordTFIDF(MRJob):
         self.terms_idf = {k: 1/(len(v)+1) for k, v in self.df_dict.items()}
         self.terms_tf_idf = {k: v*self.terms_idf[k] for k, v in self.tf_dict.items()}
 
-        for k, v in self.terms_tf_idf.items():
+        #for k, v in self.terms_tf_idf.items():
+            #yield k, v
+        
+        # yield by order
+        for k, v in sorted(self.terms_tf_idf.items(), key=lambda item: item[1], reverse=True):
             yield k, v
+        
 
 
     
