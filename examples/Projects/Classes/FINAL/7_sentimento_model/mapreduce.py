@@ -7,7 +7,7 @@ from nltk.sentiment import SentimentIntensityAnalyzer
 
 
 class SentimentAnalysis(MRJob):
-    """Job to perform sentiment analysis on the reviews."""
+    """Job to perform sentiment analysis on the reviews, using a NLTK model."""
 
     def configure_args(self):
         super(SentimentAnalysis, self).configure_args()
