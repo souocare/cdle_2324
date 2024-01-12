@@ -1,6 +1,3 @@
-import re
-import json
-import sys
 
 from mrjob.job import MRJob
 from mrjob.step import MRStep
@@ -8,11 +5,9 @@ from mrjob.step import MRStep
 import nltk
 from nltk.sentiment import SentimentIntensityAnalyzer
 
-# Download the VADER lexicon (if not already downloaded)
-nltk.download('vader_lexicon')
-
 
 class SentimentAnalysis(MRJob):
+    """Job to perform sentiment analysis on the reviews."""
 
     def configure_args(self):
         super(SentimentAnalysis, self).configure_args()
@@ -20,54 +15,72 @@ class SentimentAnalysis(MRJob):
         self.add_passthru_arg("-cc", "--compressioncodec", help="Compression codec (e.g., gzip)")
 
     def mapper_init(self): 
+        """Initialize the mapper, by initializing the SentimentIntensityAnalyzer."""
+        # Download the VADER lexicon (if not already downloaded)
+        nltk.download('vader_lexicon')
         # Create a SentimentIntensityAnalyzer
         self.sid = SentimentIntensityAnalyzer()      
 
 
     def mapper(self, key, value):
-
+        """Perform sentiment analysis on the review text.
+            Yield the sentiment and the count of 1.
+        """
         sent = self.sid.polarity_scores(value)['compound'] # Get the sentiment score for the review 
         if sent > 0.5:
-            yield 'positive', 1
+            pol = 'positive'
         elif sent < 0.5:
-            yield 'neutral', 1
+            pol = 'neutral'
         else:
-            yield 'negative', 1
+            pol = 'negative'
+
+        yield pol, 1
 
     def combiner(self, key, values):
+        """Prepare data for the Reducer. 
+            Sum all the values '1' for each key (polarity).
+        """
         yield key, sum(values)
 
     def reducer(self, key, value):
+        """Reduce the data. To get all polarities count."""
         yield None, (sum(value), key)
 
     def reducer_final(self, _, values):
+        """Calculate the percentage of each polarity.
+            Yield the count and the percentage of each polarity.
+        """
         total_counts = 0
         for count, key in values:
             total_counts += count
             yield key, count
-
         yield 'total', total_counts
         yield f"Percentage of {key}", f"{count/total_counts}%"
 
         
 
     def steps(self):
+        """Steps to run the MapReduce job.
+            The first step is to classify the sentiment of each review
+             and to count the polarities.
+            The second step is to return polarities statistics.
+        """
         return [
             MRStep(
                 mapper_init=self.mapper_init,
                 mapper=self.mapper, 
                 combiner = self.combiner,
                 reducer=self.reducer,
-                #jobconf={
-                #    'mapreduce.job.reduces': self.options.numreducers  # Set the number of reducers
-                #}
+                jobconf={
+                    'mapreduce.job.reduces': self.options.numreducers  # Set the number of reducers
+                }
             ),
             MRStep(
                 reducer=self.reducer_final,
-                #jobconf={
-                #    'mapreduce.output.fileoutputformat.compress': 'true',
-                #    'mapreduce.output.fileoutputformat.compress.codec': "org.apache.hadoop.io.compress." + self.options.compressioncodec  # Set compression codec
-                #}
+                jobconf={
+                    'mapreduce.output.fileoutputformat.compress': 'true',
+                    'mapreduce.output.fileoutputformat.compress.codec': "org.apache.hadoop.io.compress." + self.options.compressioncodec  # Set compression codec
+                }
             )
         ]
     
