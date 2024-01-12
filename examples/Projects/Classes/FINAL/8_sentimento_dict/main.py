@@ -44,7 +44,7 @@ if localorhadoop == "hadoop":
     # added file to hadoop
     os.system("hadoop fs -put -f /home/usermr/examples/input/gutenberg-small/" + input + " /user/usermr/examples/input/gutenberg-small/")
 
-    os.system('python3 mapreduce.py -r hadoop hdfs:///user/usermr/examples/input/gutenberg-small/' + input + ' -o /user' + output)# + ' -nr 2 -cc GzipCodec')
+    os.system('python3 mapreduce.py -r hadoop hdfs:///user/usermr/examples/input/gutenberg-small/' + input + ' -o /user' + output + ' -nr 2 -cc GzipCodec')
 
     print("")
     
@@ -55,5 +55,5 @@ else:
     
     os.system("rm -r /home/usermr/examples/output/gutenberg-small/*")
 
-    os.system("python3 mapreduce.py file:///home/usermr/examples/input/gutenberg-small/"+input+" -o "+output)#+" -nr 2 -cc GzipCodec")
+    os.system("python3 mapreduce.py file:///home/usermr/examples/input/gutenberg-small/"+input+" -o "+output+" -nr 2 -cc GzipCodec")
     pass

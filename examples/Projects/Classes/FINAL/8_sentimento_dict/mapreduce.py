@@ -10,6 +10,12 @@ WORD_RE = re.compile(r"\b\w+\b") #re.compile(r"[\w']+")
 class SentimentDict(MRJob):
     """Job to perform sentiment analysis on the reviews, using a dictionarity."""
 
+    def configure_args(self):
+        super(SentimentDict, self).configure_args()
+        self.add_passthru_arg("-nr", "--numreducers", help="Number of reducers")
+        self.add_passthru_arg("-cc", "--compressioncodec", help="Compression codec (e.g., gzip)")
+
+
     def mapper_init(self):
         # open json file with word polarities
         with open('words_sentiment.json') as f:
