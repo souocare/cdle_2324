@@ -6,7 +6,6 @@ from mrjob.job import MRJob
 from mrjob.step import MRStep
 
 
-
 class WordCounter(MRJob):
 
     def configure_args(self):
@@ -16,23 +15,41 @@ class WordCounter(MRJob):
 
 
     def mapper(self, key, value):
-        #value = value.decode('utf-8')  # Decode bytes to utf-8 string
         
-        #for line in value:
-        line = value #line.strip()
-        tokens = re.findall(r"\b\w+\b", line)
+
+        tokens = re.findall(r"\b\w+\b", value.lower()) # Regex to find all words in the review text
         for token in tokens:
             yield token, 1
+
+    def combiner(self, key, values):
+        yield key, sum(values)
 
     def reducer(self, key, value):
         yield None, (sum(value), key)
 
-    def reducer_sort(self, key, values):
+    def reducer_sort(self, _, values): #key was None
         for count, key in sorted(values):
             yield count, key
 
-    def combiner(self, key, values):
-        yield key, sum(values)
+    
+    def steps(self):
+        return [
+            MRStep(
+                mapper=self.mapper, 
+                combiner = self.combiner,
+                reducer=self.reducer,
+                #jobconf={
+                #    'mapreduce.job.reduces': self.options.numreducers  # Set the number of reducers
+                #}
+            ),
+            MRStep(
+                reducer=self.reducer_sort,
+                #jobconf={
+                #    'mapreduce.output.fileoutputformat.compress': 'true',
+                #    'mapreduce.output.fileoutputformat.compress.codec': "org.apache.hadoop.io.compress." + self.options.compressioncodec  # Set compression codec
+                #}
+            )
+        ]
 
     def steps(self):
         return [

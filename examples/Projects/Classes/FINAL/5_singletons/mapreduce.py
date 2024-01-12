@@ -37,10 +37,39 @@ class SingletonWords(MRJob):
     def combiner(self, word, counts):
         yield word, sum(counts)
 
-    def reducer(self, word, counts):
-        total_count = sum(counts)
-        if total_count == 1:
-            yield "Singleton Word:", word
+    def reducer(self, key, values):
+        """Instance of a Reducer
+
+        Args:
+            key (_type_): _description_
+            values (_type_): _description_
+
+        Yields:
+            _type_: _description_
+        """
+        
+        # to order by alphabetical order
+        #yield key, sum(values)
+        
+        # to order by count of words
+        yield None, (sum(values), key)
+
+    def reducer_init(self):
+        self.singletons = []
+
+    def reducer_final(self, _, counts):
+        total_counts = 0
+        total_uniques = 0
+
+        for value, key in counts:
+            total_counts += value
+            total_uniques += 1
+            if value == 1:
+                self.singletons.append(key)
+        yield "Percentage of singletons in all counts", f"{round(len(self.singletons)/total_counts*100, 3)}%"
+        yield "Percentage of singletons in unique counts", f"{round(len(self.singletons)/total_uniques*100, 3)}%"
+        for word in self.singletons:
+            yield "Singleton", word
 
     def steps(self):
         return [
@@ -48,6 +77,10 @@ class SingletonWords(MRJob):
                 mapper=self.mapper,
                 combiner=self.combiner,
                 reducer=self.reducer
+            ),
+            MRStep(
+                reducer_init=self.reducer_init,
+                reducer=self.reducer_final
             )
         ]
 
