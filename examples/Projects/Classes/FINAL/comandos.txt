@@ -23,3 +23,4 @@ Em cada pasta
 Dados (reviews.json): https://www.kaggle.com/datasets/eswarchandt/amazon-music-reviews
 
 Video (pratica3/ex4): python3 mapreduce.py file:///home/usermr/examples/input/facedetect/video.mp4 -o file:///home/usermr/examples/output/facedetect -nr 2 -cc GzipCodec
+python3 main.py hadoop faces.mp4 "user/usermr/examples/output/facedetect/"

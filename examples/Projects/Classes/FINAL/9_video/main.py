@@ -1,4 +1,5 @@
 import os
+import mapreduce
 import sys
 
 list_of_arguments = sys.argv
@@ -9,15 +10,13 @@ localorhadoop = list_of_arguments[1]
 input = list_of_arguments[2]
 output = list_of_arguments[3]
 
-localorhadoop = "hadoop"
+localorhadoop = "local"
 
 if localorhadoop == "hadoop":
     # Remove files so it can generate the new ouputs
     
     os.system("hadoop fs -rm -r /user" + output)
-    print("CMD: hadoop fs -rm -r /user" + output)
-    os.system("rm -r /home" + output + "/*")
-    print("CMD: rm -r /home" + output + "/*")
+    os.system("rm -r /home" + output + "*")
 
     # remove input folder hadoop
     destination_directory = "/user/usermr/examples/input/facedetect/*" + input
@@ -43,7 +42,7 @@ if localorhadoop == "hadoop":
     # added file to hadoop
     os.system("hadoop fs -put -f /home/usermr/examples/input/facedetect/" + input + " /user/usermr/examples/input/facedetect/")
 
-    os.system('python3 mapreduce.py -r hadoop hdfs:///user/usermr/examples/input/facedetect/' + input + ' -o /user' + output) # + ' -nr 2 -cc GzipCodec')
+    os.system('python3 mapreduce.py -r hadoop hdfs:///user/usermr/examples/input/facedetect/' + input + ' -o /user' + output) #+ ' -nr 2 -cc GzipCodec')
 
     print("")
     
