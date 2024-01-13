@@ -11,7 +11,7 @@ localorhadoop = list_of_arguments[1]
 input = list_of_arguments[2]
 output = list_of_arguments[3]
 
-localorhadoop = "hadoop"
+localorhadoop = "local"
 
 if localorhadoop == "hadoop":
     # Remove files so it can generate the new ouputs
