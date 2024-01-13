@@ -63,7 +63,7 @@ class SentimentAnalysis(MRJob):
             total_counts += count
             yield key, count
         yield 'total', total_counts
-        yield f"Percentage of {key}", f"{count/total_counts}%"
+        yield f"Percentage of {key}", f"{count/total_counts*100}%"
 
         
 
