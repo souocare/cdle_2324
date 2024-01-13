@@ -11,6 +11,11 @@ class WordTFIDF(MRJob):
         https://www.kaggle.com/datasets/eswarchandt/amazon-music-reviews.
     """
 
+    def configure_args(self):
+        super(WordTFIDF, self).configure_args()
+        self.add_passthru_arg("-nr", "--numreducers", help="Number of reducers")
+        self.add_passthru_arg("-cc", "--compressioncodec", help="Compression codec (e.g., gzip)")
+
     def mapper_init(self):   
         """Initialize the variables to calculate TF-IDF.
             This method is called before the mapper and it's needed 

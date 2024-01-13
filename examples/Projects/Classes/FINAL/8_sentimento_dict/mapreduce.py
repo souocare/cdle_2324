@@ -17,6 +17,11 @@ class SentimentDict(MRJob):
 
 
     def mapper_init(self):
+        self.sentiment_dict = {
+            "positive": [],
+            "negative": [],
+            "neutral": []
+        }
         # open json file with word polarities
         with open('words_sentiment.json') as f:
             words_sentiment = json.load(f)
@@ -53,11 +58,7 @@ class SentimentDict(MRJob):
             "sadness"
         ]
 
-        self.sentiment_dict = {
-            "positive": [],
-            "negative": [],
-            "neutral": []
-        }
+        
 
         for word, value in words_sentiment.items():
             pos, neg = 0, 0

@@ -1,6 +1,8 @@
+#!/usr/bin/env python
 
 from mrjob.job import MRJob
 from mrjob.step import MRStep
+import logging
 
 import nltk
 from nltk.sentiment import SentimentIntensityAnalyzer
@@ -17,6 +19,11 @@ class SentimentAnalysis(MRJob):
     def mapper_init(self): 
         """Initialize the mapper, by initializing the SentimentIntensityAnalyzer."""
         # Download the VADER lexicon (if not already downloaded)
+        logging.basicConfig(
+            level=logging.INFO,
+            format='%(asctime)s %(levelname)s %(name)s: %(message)s',
+            datefmt='%Y-%m-%d %H:%M:%S'
+        )
         nltk.download('vader_lexicon')
         # Create a SentimentIntensityAnalyzer
         self.sid = SentimentIntensityAnalyzer()      

@@ -46,7 +46,7 @@ localorhadoop = list_of_arguments[1]
 output = list_of_arguments[2]
 inputfilename = choices_paths[selected_operation]
 
-localorhadoop = "hadoop"
+#localorhadoop = "hadoop"
 
 if localorhadoop == "hadoop":
     # Remove files so it can generate the new ouputs
