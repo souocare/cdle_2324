@@ -7,13 +7,16 @@ def get_user_choice():
     print("2. Word Count JSON")
     print("3. Word Count JSON REGEX")
     print("4. Frequency Table Bigrams")
-    print("5. TF-IDF")
-    print("6. Sentiment Analysis (Dictionary)")
-    print("7. Sentiment Analysis with Model")
+    print("5. Singletons - Bigrams")
+    print("6. Singletons")
+    print("7. TF-IDF")
+    print("8. Sentiment Analysis with Model")
+    print("9. Sentiment Analysis (Dictionary)")
+    print("10. Video Analysis")
 
     choice = input("Enter the number corresponding to your choice: ")
-    if str(choice) not in ["1", "2", "3", "4", "5", "6", "7"]:
-        print("Invalid choice. Please run again, and enter a number between 1 and 7.")
+    if str(choice) not in ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]:
+        print("Invalid choice. Please run again, and enter a number between 1 and 10.")
         sys.exit()
     return str(choice)
 
@@ -22,9 +25,12 @@ choices_paths = {"1": "/1_word_count_txt/mapreduce.py",
                  "2": "/2_word_count_json/mapreduce.py", 
                  "3": "/3_word_count_json_regex/mapreduce.py", 
                  "4": "/4_frequency_table_bigrams/mapreduce.py", 
-                 "5": "/5_tfidf/mapreduce.py", 
-                 "6": "/6_sentimento_dict/mapreduce.py", 
-                 "7": "/6_sentimento_model/mapreduce.py"}
+                 "5": "/5_bigram_singletons/mapreduce.py", 
+                 "6": "/6_singletons/mapreduce.py", 
+                 "7": "/7_tfidf/mapreduce.py", 
+                 "8": "/8_sentimento_model/mapreduce.py", 
+                 "9": "/9_sentimento_dict/mapreduce.py", 
+                 "10": "/10_video/mapreduce.py"}
 
 # Get user's choice
 selected_operation = get_user_choice()
